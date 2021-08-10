@@ -29,16 +29,22 @@ const ConnectionField = ({ field, value, editing, onChange }) => {
   const { i18n, isRTL } = useI18N();
   const { isContact, isGroup, postType } = usePostType();
 
+  // if value is null, then set a default to ensure field displays
+  if (value === null) value = { values: [{ value: '' }] };
+
   const selectedItems = value?.values;
 
   const addConnection = (newValue) => {
-    const exists = selectedItems.find((existingValue) => existingValue?.value === newValue?.ID);
+    const exists = selectedItems.find(
+      (existingValue) =>
+        existingValue?.value === newValue?.ID || existingValue?.value === newValue?.contact_id,
+    );
     if (!exists)
       onChange({
         values: [
           ...selectedItems,
           {
-            value: newValue.ID,
+            value: newValue?.contact_id || newValue.ID,
             name: newValue.name,
           },
         ],
